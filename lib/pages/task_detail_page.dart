@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_manager/constants/text_constants.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/pages/delete_task_page.dart';
 import 'package:task_manager/pages/update_task_page.dart';
@@ -16,22 +17,24 @@ class TaskDetailPage extends StatelessWidget {
     final index = tasks.indexWhere((task) => task.id == taskId);
     if (index == -1) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Görev detayı')),
-        body: const Center(child: Text('Görev artık mevcut değil.')),
+        appBar: AppBar(title: const Text(TextConstants.taskDetail)),
+        body: const Center(
+          child: Text(TextConstants.taskNoLongerExists),
+        ),
       );
     }
     final task = tasks[index];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Görev detayı'),
+        title: const Text(TextConstants.taskDetail),
         actions: [
           IconButton(
-            tooltip: 'Düzenle',
+            tooltip: TextConstants.edit,
             onPressed: () => _openUpdate(context, task),
             icon: const Icon(Icons.edit),
           ),
           IconButton(
-            tooltip: 'Sil',
+            tooltip: TextConstants.delete,
             onPressed: () => _openDelete(context, task),
             icon: const Icon(Icons.delete_outline),
           ),
@@ -48,11 +51,13 @@ class TaskDetailPage extends StatelessWidget {
           const SizedBox(height: 24),
           Text(task.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 24),
-          _InfoRow(label: 'Görev ID', value: '${task.id}'),
-          _InfoRow(label: 'Kullanıcı ID', value: '${task.userId}'),
+          _InfoRow(label: TextConstants.taskId, value: '${task.id}'),
+          _InfoRow(label: TextConstants.userId, value: '${task.userId}'),
           _InfoRow(
-            label: 'Durum',
-            value: task.completed ? 'Tamamlandı' : 'Devam ediyor',
+            label: TextConstants.status,
+            value: task.completed
+                ? TextConstants.completed
+                : TextConstants.inProgress,
           ),
         ],
       ),

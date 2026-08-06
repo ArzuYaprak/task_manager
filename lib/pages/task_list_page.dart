@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_manager/constants/text_constants.dart';
 import 'package:task_manager/pages/create_task_page.dart';
 import 'package:task_manager/pages/task_detail_page.dart';
 import 'package:task_manager/providers/task_provider.dart';
@@ -25,7 +26,7 @@ class _TaskListPageState extends State<TaskListPage> {
   Widget build(BuildContext context) {
     final provider = context.watch<TaskProvider>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Görevler')),
+      appBar: AppBar(title: const Text(TextConstants.tasks)),
       body: _buildBody(provider),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: provider.isLoading
@@ -36,7 +37,7 @@ class _TaskListPageState extends State<TaskListPage> {
                 ),
               ),
         icon: const Icon(Icons.add),
-        label: const Text('Yeni görev'),
+        label: const Text(TextConstants.newTask),
       ),
     );
   }
@@ -59,7 +60,7 @@ class _TaskListPageState extends State<TaskListPage> {
               FilledButton.icon(
                 onPressed: provider.fetchTasks,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Tekrar dene'),
+                label: const Text(TextConstants.retry),
               ),
             ],
           ),
@@ -67,7 +68,7 @@ class _TaskListPageState extends State<TaskListPage> {
       );
     }
     if (provider.tasks.isEmpty) {
-      return const Center(child: Text('Henüz görev bulunmuyor.'));
+      return const Center(child: Text(TextConstants.noTasks));
     }
     return RefreshIndicator(
       onRefresh: provider.fetchTasks,

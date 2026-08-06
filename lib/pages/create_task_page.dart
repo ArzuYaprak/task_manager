@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_manager/constants/text_constants.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/providers/task_provider.dart';
 
@@ -13,7 +14,9 @@ class CreateTaskPage extends StatefulWidget {
 class _CreateTaskPageState extends State<CreateTaskPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _userIdController = TextEditingController(text: '1');
+  final _userIdController = TextEditingController(
+    text: TextConstants.defaultUserId,
+  );
   bool _completed = false;
 
   @override
@@ -39,7 +42,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.errorMessage ?? 'Bir hata oluştu.')),
+        SnackBar(
+          content: Text(provider.errorMessage ?? TextConstants.genericError),
+        ),
       );
     }
   }
@@ -48,7 +53,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   Widget build(BuildContext context) {
     final isLoading = context.watch<TaskProvider>().isLoading;
     return Scaffold(
-      appBar: AppBar(title: const Text('Yeni görev')),
+      appBar: AppBar(title: const Text(TextConstants.newTask)),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -59,24 +64,30 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 controller: _titleController,
                 autofocus: true,
                 maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Görev başlığı'),
+                decoration: const InputDecoration(
+                  labelText: TextConstants.taskTitle,
+                ),
                 validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Görev başlığı zorunludur.'
+                    ? TextConstants.taskTitleRequired
                     : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _userIdController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Kullanıcı ID'),
+                decoration: const InputDecoration(
+                  labelText: TextConstants.userId,
+                ),
                 validator: (value) {
                   final id = int.tryParse(value?.trim() ?? '');
-                  return id == null || id <= 0 ? 'Geçerli bir ID girin.' : null;
+                  return id == null || id <= 0
+                      ? TextConstants.validIdRequired
+                      : null;
                 },
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Tamamlandı'),
+                title: const Text(TextConstants.completed),
                 value: _completed,
                 onChanged: isLoading
                     ? null
@@ -91,7 +102,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.save),
-                label: const Text('Kaydet'),
+                label: const Text(TextConstants.save),
               ),
             ],
           ),
