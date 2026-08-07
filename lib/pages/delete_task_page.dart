@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_manager/constants/text_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/providers/task_provider.dart';
+import 'package:task_manager/extensions/api_exception_localization.dart';
 
 class DeleteTaskPage extends StatelessWidget {
   const DeleteTaskPage({super.key, required this.task});
@@ -18,7 +19,9 @@ class DeleteTaskPage extends StatelessWidget {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(provider.errorMessage ?? TextConstants.genericError),
+          content: Text(
+            provider.error?.localizedMessage() ?? 'generic_error'.tr(),
+          ),
         ),
       );
     }
@@ -28,7 +31,7 @@ class DeleteTaskPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLoading = context.watch<TaskProvider>().isLoading;
     return Scaffold(
-      appBar: AppBar(title: const Text(TextConstants.deleteTask)),
+      appBar: AppBar(title: Text('delete_task'.tr())),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -42,7 +45,7 @@ class DeleteTaskPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                TextConstants.deleteConfirmation,
+                'delete_confirmation'.tr(),
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -54,7 +57,7 @@ class DeleteTaskPage extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: isLoading ? null : () => Navigator.pop(context),
-                    child: const Text(TextConstants.cancel),
+                    child: Text('cancel'.tr()),
                   ),
                   const SizedBox(width: 12),
                   FilledButton.icon(
@@ -68,7 +71,7 @@ class DeleteTaskPage extends StatelessWidget {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.delete),
-                    label: const Text(TextConstants.delete),
+                    label: Text('delete'.tr()),
                   ),
                 ],
               ),

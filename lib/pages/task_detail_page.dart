@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_manager/constants/text_constants.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/pages/delete_task_page.dart';
 import 'package:task_manager/pages/update_task_page.dart';
 import 'package:task_manager/providers/task_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TaskDetailPage extends StatelessWidget {
   const TaskDetailPage({super.key, required this.taskId});
@@ -17,24 +17,22 @@ class TaskDetailPage extends StatelessWidget {
     final index = tasks.indexWhere((task) => task.id == taskId);
     if (index == -1) {
       return Scaffold(
-        appBar: AppBar(title: const Text(TextConstants.taskDetail)),
-        body: const Center(
-          child: Text(TextConstants.taskNoLongerExists),
-        ),
+        appBar: AppBar(title: Text('task_detail'.tr())),
+        body: Center(child: Text('task_no_longer_exists'.tr())),
       );
     }
     final task = tasks[index];
     return Scaffold(
       appBar: AppBar(
-        title: const Text(TextConstants.taskDetail),
+        title: Text('task_detail'.tr()),
         actions: [
           IconButton(
-            tooltip: TextConstants.edit,
+            tooltip: 'edit'.tr(),
             onPressed: () => _openUpdate(context, task),
             icon: const Icon(Icons.edit),
           ),
           IconButton(
-            tooltip: TextConstants.delete,
+            tooltip: 'delete'.tr(),
             onPressed: () => _openDelete(context, task),
             icon: const Icon(Icons.delete_outline),
           ),
@@ -51,13 +49,11 @@ class TaskDetailPage extends StatelessWidget {
           const SizedBox(height: 24),
           Text(task.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 24),
-          _InfoRow(label: TextConstants.taskId, value: '${task.id}'),
-          _InfoRow(label: TextConstants.userId, value: '${task.userId}'),
+          _InfoRow(label: 'task_id'.tr(), value: '${task.id}'),
+          _InfoRow(label: 'user_id'.tr(), value: '${task.userId}'),
           _InfoRow(
-            label: TextConstants.status,
-            value: task.completed
-                ? TextConstants.completed
-                : TextConstants.inProgress,
+            label: 'status'.tr(),
+            value: task.completed ? 'completed'.tr() : 'in_progress'.tr(),
           ),
         ],
       ),
@@ -92,7 +88,10 @@ class _InfoRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 112,
-            child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           Expanded(child: Text(value)),
         ],

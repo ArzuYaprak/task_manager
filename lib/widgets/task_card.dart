@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/models/task.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({super.key, required this.task, required this.onTap});
@@ -25,7 +26,7 @@ class TaskCard extends StatelessWidget {
             decoration: task.completed ? TextDecoration.lineThrough : null,
           ),
         ),
-        subtitle: Text('Kullanıcı: ${task.userId}'),
+        subtitle: Text('user'.tr(namedArgs: {'id': task.userId.toString()})),
         trailing: const Icon(Icons.chevron_right),
       ),
     );

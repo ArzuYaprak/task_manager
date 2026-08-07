@@ -1,30 +1,40 @@
 import 'package:flutter/foundation.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/services/task_service.dart';
+import 'package:task_manager/exceptions/api_exception.dart';
 
 class TaskProvider extends ChangeNotifier {
-  TaskProvider({TaskService? taskService})
-    : taskService = taskService ?? TaskService();
+  TaskProvider({required this.taskService});
 
   final TaskService taskService;
 
   List<Task> _tasks = [];
   bool _isLoading = false;
-  String? _errorMessage;
+  ApiException? _error;
 
-  List<Task> get tasks => List.unmodifiable(_tasks);
+  List<Task> get tasks => List.unmodifiable(
+    _tasks,
+  ); //dışardaki kod görevleri okuyabilir ama doğrudan değiştiremez
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
+  ApiException? get error => _error;
 
-  Future<void> fetchTasks() async {
+  void _setError(Object error) {
+    if (error is ApiException) {
+      _error = error;
+    } else {
+      _error = const ApiException(messageKey: 'generic_error');
+    }
+  }
+
+  Future<void> fetchTasks({bool forceRefresh = false}) async {
     _isLoading = true;
-    _errorMessage = null;
+    _error = null;
     notifyListeners();
 
     try {
-      _tasks = await taskService.getTasks();
+      _tasks = await taskService.getTasks(forceRefresh: forceRefresh);
     } catch (error) {
-      _errorMessage = error.toString();
+      _setError(error);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -33,7 +43,7 @@ class TaskProvider extends ChangeNotifier {
 
   Future<bool> createTask(Task task) async {
     _isLoading = true;
-    _errorMessage = null;
+    _error = null;
     notifyListeners();
 
     try {
@@ -43,7 +53,7 @@ class TaskProvider extends ChangeNotifier {
 
       return true;
     } catch (error) {
-      _errorMessage = error.toString();
+      _setError(error);
 
       return false;
     } finally {
@@ -54,7 +64,7 @@ class TaskProvider extends ChangeNotifier {
 
   Future<bool> updateTask(Task task) async {
     _isLoading = true;
-    _errorMessage = null;
+    _error = null;
     notifyListeners();
 
     try {
@@ -70,7 +80,7 @@ class TaskProvider extends ChangeNotifier {
 
       return true;
     } catch (error) {
-      _errorMessage = error.toString();
+      _setError(error);
 
       return false;
     } finally {
@@ -81,7 +91,7 @@ class TaskProvider extends ChangeNotifier {
 
   Future<bool> deleteTask(int id) async {
     _isLoading = true;
-    _errorMessage = null;
+    _error = null;
     notifyListeners();
 
     try {
@@ -91,7 +101,7 @@ class TaskProvider extends ChangeNotifier {
 
       return true;
     } catch (error) {
-      _errorMessage = error.toString();
+      _setError(error);
 
       return false;
     } finally {

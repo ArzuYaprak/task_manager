@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_manager/constants/text_constants.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/providers/task_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:task_manager/extensions/api_exception_localization.dart';
 
 class CreateTaskPage extends StatefulWidget {
   const CreateTaskPage({super.key});
@@ -14,9 +15,7 @@ class CreateTaskPage extends StatefulWidget {
 class _CreateTaskPageState extends State<CreateTaskPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _userIdController = TextEditingController(
-    text: TextConstants.defaultUserId,
-  );
+  final _userIdController = TextEditingController(text: '1');
   bool _completed = false;
 
   @override
@@ -43,7 +42,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(provider.errorMessage ?? TextConstants.genericError),
+          content: Text(
+            provider.error?.localizedMessage() ?? 'generic_error'.tr(),
+          ),
         ),
       );
     }
@@ -53,9 +54,10 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   Widget build(BuildContext context) {
     final isLoading = context.watch<TaskProvider>().isLoading;
     return Scaffold(
-      appBar: AppBar(title: const Text(TextConstants.newTask)),
+      appBar: AppBar(title: Text('new_task'.tr())),
       body: SafeArea(
         child: Form(
+          //Metin alanlarını tek bir form altında toplar ve topluca doğrulamayı sağlar.
           key: _formKey,
           child: ListView(
             padding: const EdgeInsets.all(16),
@@ -64,30 +66,27 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 controller: _titleController,
                 autofocus: true,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: TextConstants.taskTitle,
-                ),
+                decoration: InputDecoration(labelText: 'task_title'.tr()),
                 validator: (value) => value == null || value.trim().isEmpty
-                    ? TextConstants.taskTitleRequired
+                    ? 'task_title_required'.tr()
                     : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
+                //telefonda sayısal klavye açılmasını ister, garanti etmek için validatorda kullanıldı
                 controller: _userIdController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: TextConstants.userId,
-                ),
+                decoration: InputDecoration(labelText: 'user_id'.tr()),
                 validator: (value) {
                   final id = int.tryParse(value?.trim() ?? '');
                   return id == null || id <= 0
-                      ? TextConstants.validIdRequired
+                      ? 'valid_id_required'.tr()
                       : null;
                 },
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text(TextConstants.completed),
+                title: Text('completed'.tr()),
                 value: _completed,
                 onChanged: isLoading
                     ? null
@@ -102,7 +101,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.save),
-                label: const Text(TextConstants.save),
+                label: Text('save'.tr()),
               ),
             ],
           ),
